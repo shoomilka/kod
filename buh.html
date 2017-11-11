@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Розрахувати дохід від валютних надходжень</title>
+
+    <link rel="stylesheet" href="app.css">
+    <style>
+        p{padding:10px;}
+    </style>
+    <script src="jquery-3.2.1.min.js"></script>
+
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle Navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Розрахувати дохід від валютних надходжень</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+
+    <h2>Операції</h2>
+    <hr/>
+
+    <div class="col-md-10">
+        <form accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data" action="">
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="date1">Дата надходження валюти на розподільчий рахунок</label>
+              <input class="form-control" id="date1" type="date" value="2017-07-13">
+            </div>
+            <div class="col-xs-3">
+              <label for="cur1">Валюта</label>
+              <input class="form-control" id="cur1" type="text" value="USD">
+            </div>
+            <div class="col-xs-3">
+              <label for="val1">Сума</label>
+              <input class="form-control" id="val1" type="number" min="0.00" max="10000.00" step="0.01" value="540.45">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="date2">Дата зарахування гривні (обов'язкова конвертація)</label>
+              <input class="form-control" id="date2" type="date" value="2017-07-14">
+            </div>
+            <div class="col-xs-3">
+              <label for="cur2">Валюта</label>
+              <input class="form-control" id="cur2" type="text" value="UAH" disabled>
+            </div>
+            <div class="col-xs-3">
+              <label for="val2">Сума</label>
+              <input class="form-control" id="val2" type="number" min="0.00" max="10000.00" step="0.01" value="14030.08">
+            </div>
+          </div>
+          <h3>Продаж вільної валюти</h3>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="date3">Дата продажу</label>
+              <input class="form-control" id="date3" type="date" value="2017-07-17">
+            </div>
+            <div class="col-xs-3">
+              <label for="cur3">Валюта</label>
+              <input class="form-control" id="cur3" type="text" value="UAH" disabled>
+            </div>
+            <div class="col-xs-3">
+              <label for="val3">Сума</label>
+              <input class="form-control" id="val3" type="number" min="0.00" max="10000.00" step="0.01" value="14019.27">
+            </div>
+          </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-3">
+                    <a class="btn btn-primary form-control" onclick="calcu()">Обчислити</a>
+                </div>
+            </div>
+        </form>
+      </div>
+
+
+      
+        <div id="result" class="col-md-12">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th rowspan="3">Дата</th>
+                <th colspan="5">Дохід від провадження діяльності</th>
+                <th colspan="2">Дохід, що оподатковується за ставкою 15%</th>
+              </tr>
+              <tr>
+                <th colspan="3">вартість проданих товарів, виконаних робіт, наданих послуг</th>
+                <th rowspan="2">вартість безоплатно отриманих товарів (робіт, послуг), грн.</th>
+                <th rowspan="2">всього, грн. (гр.4 + сума, гр.5)</th>
+                <th rowspan="2">вид доходу</th>
+                <th rowspan="2">сума, грн.</th>
+              </tr>
+              <tr>
+                <th>сума, грн</th>
+                <th>сума повернутих коштів за товар (роботи, послуги) та/або передплати, грн.</th>
+                <th>скоригована сума доходу, грн. (гр.2 – гр.3)</th>
+              </tr>
+            </thead>
+            <thead>
+              <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="result-date1">00.00.0000 (б/г)</td>
+                <td name="result-value1">0,00</td>
+                <td>0,00</td>
+                <td name="result-value1">0,00</td>
+                <td>0,00</td>
+                <td name="result-value1">0,00</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td id="result-date2">00.00.0000 (б/г)</td>
+                <td name="result-value2">0,00</td>
+                <td>0,00</td>
+                <td name="result-value2">0,00</td>
+                <td>0,00</td>
+                <td name="result-value2">0,00</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr style="display:none;">
+                <td id="result-date3">00.00.0000 (б/г)</td>
+                <td name="result-value3">0,00</td>
+                <td>0,00</td>
+                <td name="result-value3">0,00</td>
+                <td>0,00</td>
+                <td name="result-value3">0,00</td>
+                <td></td>
+                <td>0,00</td>
+              </tr><!--
+              <tr>
+                <td style="text-align: right;" colspan="5">Безготівковий дохід за липень 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Всього за липень 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Безготівковий дохід за III квартал 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Всього за III квартал 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Безготівковий дохід за перше півріччя 2017 р.</td>
+                <td>0,00</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5"></td>
+                <td>0,00</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Безготівковий дохід за 9 місяців 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="5">Всього за 9 місяців 2017 р.</td>
+                <td>28033,50</td>
+                <td></td>
+                <td>0,00</td>
+              </tr>-->
+            </tbody>
+          </table>
+        </div>
+        <h2 id="sum"></h2>
+</div>
+
+  <script type="text/javascript">
+function getDate(va){
+  var dat;
+  dat = $('#date'+va).val();
+  dat = dat.split("-");
+  return dat[2] + "." + dat[1] + "." + dat[0];
+}
+
+function calcu(){
+  var date1, date2, date3, cur1, val1, val2, val3, dateapi;
+  date1 = getDate(1);
+  date2 = getDate(2);
+  date3 = getDate(3);
+  dateapi = date1.split(".");
+  dateapi = dateapi[2] + dateapi[1] + dateapi[0];
+  cur1 = $('#cur1').val();
+
+  val1 = $('#val1').val();
+  val2 = $('#val2').val();
+  val3 = $('#val3').val();
+
+  //return;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var res1, delta3, rate, sum;
+      rate = $.parseJSON(this.responseText)[0]['rate'];
+      res1 = (rate * val1).toFixed(2);
+      sum = parseFloat(res1) + parseFloat(val2);
+
+      delta3 = (val3 - res1).toFixed(2);
+      $('#result-date1').text(date1 + " (б/г)");
+      $('#result-date2').text(date2 + " (б/г)");
+      $('#result-date3').text(date3 + " (б/г)");
+
+      $('[name="result-value1"]').text(res1);
+      $('[name="result-value2"]').text(val2);
+      if(delta3 > 0){
+        $('[name="result-value3"]').text(delta3);
+        $('[style="display:none;"]').attr("style", "");
+        sum = sum + parseFloat(delta3);
+      }
+      $('[style="display:none;"]').attr("style", "display:none;");
+      $('#sum').text("Сума: " + sum);
+    }
+  };
+  var url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=" + cur1 + "&date=" + dateapi + "&json";
+  xhttp.open("GET", url, true);
+  xhttp.send();
+}
+    </script>
+</body>
+</html>
